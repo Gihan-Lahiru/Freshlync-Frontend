@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { Search, Bell, LayoutDashboard, Truck, Package, Settings, LogOut, Activity, Info } from 'lucide-react';
+import { Search, Bell, LayoutDashboard, Truck, Package, Settings, LogOut, Activity, Info, Users, ShoppingBag } from 'lucide-react';
 
 export default function AdminLayout() {
   const navigate = useNavigate();
@@ -22,23 +22,25 @@ export default function AdminLayout() {
     <div className="dashboard-layout" style={{ fontFamily: 'var(--font-sans)' }}>
       {/* Sidebar */}
       <aside className="dashboard-sidebar" style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#312E81', color: 'white', position: 'sticky', top: 0 }}>
-        <div style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-          <img src="/logo.svg" alt="Freshlync logo" style={{ height: '80px', width: 'auto', background: 'white', padding: '2px', borderRadius: '6px', display: 'block' }} />
-          <div>
-            <div style={{ fontWeight: 700, fontSize: '1.25rem' }}>Freshlync</div>
-            <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.8)' }}>System Administration</div>
-          </div>
+        <div style={{ padding: '1.5rem', marginBottom: '1rem' }}>
+          <img src="/newlogo.png" alt="Freshlync logo" style={{ height: '80px', width: 'auto', display: 'block' }} />
         </div>
 
         <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 1rem', gap: '0.25rem' }}>
           <NavLink to="/admin" end style={navItemStyle}>
             <LayoutDashboard size={20} /> Dashboard
           </NavLink>
+          <NavLink to="/admin/orders" style={navItemStyle}>
+            <ShoppingBag size={20} /> Orders
+          </NavLink>
           <NavLink to="/admin/shipments" style={navItemStyle}>
             <Truck size={20} /> Shipments
           </NavLink>
           <NavLink to="/admin/inventory" style={navItemStyle}>
             <Package size={20} /> Inventory
+          </NavLink>
+          <NavLink to="/admin/users" style={navItemStyle}>
+            <Users size={20} /> User Management
           </NavLink>
         </nav>
 

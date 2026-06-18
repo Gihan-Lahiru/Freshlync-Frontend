@@ -2,19 +2,34 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import SEO from '../../components/SEO';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Register() {
-  const navigate = useNavigate();
+  const navigate    = useNavigate();
+  const { register } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState('Customer');
+  const [role, setRole]       = useState('Customer');
   const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail]     = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError]     = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    // Simulate successful registration and navigate to verify email
-    navigate('/verify-email');
+    setError('');
+    setLoading(true);
+    try {
+      // Map UI role labels to backend enum values
+      const roleMap = { Customer: 'buyer', Supplier: 'supplier' };
+      const user = await register({ name: fullName, email, password, role: roleMap[role] || 'buyer' });
+      if (user.role === 'buyer')    navigate('/marketplace');
+      else navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -23,9 +38,8 @@ export default function Register() {
       {/* Left Side - Banner */}
       <div className="split-left" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=2000)' }}>
         <div className="split-left-content">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '4rem', color: 'white' }}>
-            <img src="/logo.svg" alt="Freshlync logo" style={{ height: '80px', width: 'auto', background: 'white', padding: '2px', borderRadius: '6px', display: 'block' }} />
-            <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Freshlync</span>
+          <div style={{ marginBottom: '4rem' }}>
+            <img src="/newlogo.png" alt="Freshlync logo" style={{ height: '80px', width: 'auto', display: 'block' }} />
           </div>
           <h1>Join the Future of<br/><span>Food Distribution</span></h1>
           <p style={{ fontSize: '1.125rem', opacity: 0.9, maxWidth: '500px', lineHeight: 1.6 }}>
@@ -133,8 +147,13 @@ export default function Register() {
               </div>
             </div>
 
-            <button type="submit" className="btn-primary" style={{ width: '100%', marginBottom: '2rem' }}>
-              Create Account
+            {error && (
+              <div style={{ background: '#FEE2E2', color: '#991B1B', padding: '0.75rem 1rem', borderRadius: 8, fontSize: '0.875rem', marginBottom: '1rem' }}>
+                {error}
+              </div>
+            )}
+            <button type="submit" className="btn-primary" style={{ width: '100%', marginBottom: '2rem', opacity: loading ? 0.7 : 1 }} disabled={loading}>
+              {loading ? 'Creating Account...' : 'Create Account'}
             </button>
           </form>
 
